@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { pool } = require('./config/db');
 const app = express();
-
+const authRoutes = require('./routes/auth.routes');
 
 app.use(
   cors({
@@ -14,6 +14,9 @@ app.use(
 app.use(express.json());
 
 // api
+
+// Authentication routes
+app.use('/api/auth', authRoutes);
 
 
 module.exports = app;
