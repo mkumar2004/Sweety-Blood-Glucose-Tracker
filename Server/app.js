@@ -3,6 +3,7 @@ const cors = require("cors");
 const { pool } = require('./config/db');
 const app = express();
 const authRoutes = require('./routes/auth.routes');
+const readingRoutes = require('./routes/readingRoutes');
 
 app.use(
   cors({
@@ -17,6 +18,6 @@ app.use(express.json());
 
 // Authentication routes
 app.use('/api/auth', authRoutes);
-
+app.use('/api/readings', readingRoutes);
 
 module.exports = app;
