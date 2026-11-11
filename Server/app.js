@@ -4,10 +4,11 @@ const { pool } = require('./config/db');
 const app = express();
 const authRoutes = require('./routes/auth.routes');
 const readingRoutes = require('./routes/readingRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 app.use(
   cors({
-    origin: "http://localhost:5174",
+    origin: process.env.Front_End_url,
     credentials: true,
   })
 );
@@ -15,9 +16,9 @@ app.use(
 app.use(express.json());
 
 // api
-
-// Authentication routes
 app.use('/api/auth', authRoutes);
 app.use('/api/readings', readingRoutes);
+app.use('/api/reports', reportRoutes);
+
 
 module.exports = app;

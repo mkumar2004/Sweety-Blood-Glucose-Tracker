@@ -51,3 +51,8 @@ Thumbs.db
 *.sln
 *.sw?
 
+# Testing & API Collections
+Api Testing/
+[Aa]pi [Tt]esting/
+*.postman_collection.json
+*.postman_environment.json
