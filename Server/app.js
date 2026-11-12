@@ -15,6 +15,15 @@ app.use(
 
 app.use(express.json());
 
+// Root / Health check route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'online',
+    message: 'Sweety Blood Glucose Tracker API is running',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // api
 app.use('/api/auth', authRoutes);
 app.use('/api/readings', readingRoutes);
