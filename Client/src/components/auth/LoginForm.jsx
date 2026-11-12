@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { AuthFormCard } from './AuthFormCard';
 
 export function LoginForm() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,8 +34,7 @@ export function LoginForm() {
     e.preventDefault();
     if (!validate()) return;
 
-    setDemoFeedback('Login UI is ready. API integration will be added later.');
-    setTimeout(() => setDemoFeedback(null), 4500);
+    navigate('/dashboard');
   };
 
   const handleChange = (e) => {
