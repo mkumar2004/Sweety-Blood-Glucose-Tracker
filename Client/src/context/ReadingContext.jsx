@@ -16,7 +16,7 @@ import {
 
 const ReadingContext = createContext(null);
 
-// ── Initial state ────────────────────────────────────────────────────
+
 const initialState = {
   readings: [],
   loading: false,
@@ -24,7 +24,7 @@ const initialState = {
   initialized: false,
 };
 
-// ── Reducer ──────────────────────────────────────────────────────────
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_START":
@@ -91,7 +91,7 @@ const reducer = (state, action) => {
   }
 };
 
-// ── Helpers ──────────────────────────────────────────────────────────
+
 const SLOT_ORDER = {
   morning: 1,
   after_breakfast: 2,
@@ -99,10 +99,7 @@ const SLOT_ORDER = {
   after_dinner: 4,
 };
 
-/**
- * Sort readings by date DESC, then slot order ASC — mirrors the SQL
- * ORDER BY in readingsController.getReadings.
- */
+
 function sortReadings(readings) {
   return [...readings].sort((a, b) => {
     const dateA = a.reading_date || a.date || "";
@@ -119,20 +116,21 @@ function sortReadings(readings) {
   });
 }
 
-// ── Provider ─────────────────────────────────────────────────────────
+// Provider 
 export const ReadingProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { isAuthenticated, token } = useAuth();
 
-  // ── Fetch all readings ─────────────────────────────────────────────
+  // Fetch all readings 
   const fetchReadings = useCallback(async () => {
     if (!isAuthenticated || !token) return;
 
     dispatch({ type: "FETCH_START" });
 
     try {
-      const data = await getReadings();
-      dispatch({ type: "FETCH_SUCCESS", payload: data });
+      const response = await getReadings();
+      const readingsList = Array.isArray(response) ? response : (response?.readings || []);
+      dispatch({ type: "FETCH_SUCCESS", payload: readingsList });
     } catch (error) {
       dispatch({
         type: "FETCH_ERROR",
@@ -151,7 +149,7 @@ export const ReadingProvider = ({ children }) => {
     }
   }, [isAuthenticated, token, fetchReadings]);
 
-  // ── Add reading ────────────────────────────────────────────────────
+  //  Add reading 
   const addReading = async (readingData) => {
     try {
       const newReading = await createReadingAPI(readingData);
@@ -164,7 +162,7 @@ export const ReadingProvider = ({ children }) => {
     }
   };
 
-  // ── Edit reading ───────────────────────────────────────────────────
+  //  Edit reading
   const editReading = async (id, readingData) => {
     try {
       const updated = await updateReadingAPI(id, readingData);
@@ -177,7 +175,7 @@ export const ReadingProvider = ({ children }) => {
     }
   };
 
-  // ── Delete reading ─────────────────────────────────────────────────
+  //  Delete reading
   const removeReading = async (id) => {
     try {
       await deleteReadingAPI(id);
@@ -190,14 +188,9 @@ export const ReadingProvider = ({ children }) => {
     }
   };
 
-  // ── Clear error ────────────────────────────────────────────────────
   const clearError = () => dispatch({ type: "CLEAR_ERROR" });
 
-  // ── Derived helpers (for UI convenience) ───────────────────────────
-  /**
-   * Return today's readings (up to 4 slots).
-   * Compares against ISO date string for the local day.
-   */
+
   const getTodayReadings = useCallback(() => {
     const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 

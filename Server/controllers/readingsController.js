@@ -99,15 +99,58 @@ const createReading = async (req, res) => {
     }
 };
 
-// GET ALL READINGS
+// GET ALL READINGS (with optional pagination ?page=1&limit=20)
 const getReadings = async (req, res) => {
     try {
         const userId = req.user.userId;
+        const { page, limit } = req.query;
 
+        // Base query with user filtering
+        const baseQuery = `FROM glucose_readings WHERE user_id = $1`;
+
+        // If pagination parameters are provided, apply LIMIT and OFFSET
+        if (page !== undefined || limit !== undefined) {
+            const pageNum = Math.max(1, parseInt(page, 10) || 1);
+            const limitNum = Math.max(1, Math.min(100, parseInt(limit, 10) || 20));
+            const offset = (pageNum - 1) * limitNum;
+
+            // Get total count for pagination metadata
+            const countResult = await pool.query(
+                `SELECT COUNT(*) AS total ${baseQuery}`,
+                [userId]
+            );
+            const totalCount = parseInt(countResult.rows[0].total, 10);
+            const totalPages = Math.max(1, Math.ceil(totalCount / limitNum));
+
+            const result = await pool.query(
+                `SELECT *
+                 ${baseQuery}
+                 ORDER BY reading_date DESC,
+                          CASE time_slot
+                              WHEN 'morning' THEN 1
+                              WHEN 'after_breakfast' THEN 2
+                              WHEN 'after_lunch' THEN 3
+                              WHEN 'after_dinner' THEN 4
+                          END
+                 LIMIT $2 OFFSET $3`,
+                [userId, limitNum, offset]
+            );
+
+            return res.status(200).json({
+                success: true,
+                count: result.rows.length,
+                total: totalCount,
+                page: pageNum,
+                limit: limitNum,
+                totalPages,
+                readings: result.rows
+            });
+        }
+
+        // Default: return all readings when no pagination params are sent
         const result = await pool.query(
             `SELECT *
-             FROM glucose_readings
-             WHERE user_id = $1
+             ${baseQuery}
              ORDER BY reading_date DESC,
                       CASE time_slot
                           WHEN 'morning' THEN 1

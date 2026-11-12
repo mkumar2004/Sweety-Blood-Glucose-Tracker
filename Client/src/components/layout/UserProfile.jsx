@@ -6,7 +6,6 @@ export function UserProfile({ name = 'Manojkumar', initials = 'MK' }) {
   const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
-
   const displayName = user?.name || name;
   const displayInitials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
@@ -37,26 +36,13 @@ export function UserProfile({ name = 'Manojkumar', initials = 'MK' }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-[#141414] border border-neutral-200 dark:border-neutral-800 shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-          <div className="px-3 py-2 border-b border-neutral-200 dark:border-neutral-800/80">
-            <p className="text-xs font-medium text-neutral-900 dark:text-white truncate">{displayName}</p>
-            <p className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">{user?.email || 'user@example.com'}</p>
-          </div>
-          <button
-            onClick={() => {
-              setOpen(false);
-            }}
-            className="w-full text-left px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 flex items-center gap-2 cursor-pointer transition-colors"
-          >
-            <User className="w-3.5 h-3.5 text-neutral-400" />
-            Profile
-          </button>
+        <div className="absolute right-0 mt-2 min-w-48 max-w-72 rounded-xl bg-white dark:bg-[#141414] border border-neutral-200 dark:border-neutral-800 shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
           <button
             onClick={() => {
               setOpen(false);
               logout();
             }}
-            className="w-full text-left px-3 py-2 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2 cursor-pointer transition-colors"
+            className="w-full text-left px-3.5 py-2 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2 cursor-pointer transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             Logout

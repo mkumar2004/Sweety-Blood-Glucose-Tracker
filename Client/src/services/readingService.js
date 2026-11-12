@@ -30,10 +30,12 @@ API.interceptors.response.use(
 );
 
 // ── GET  /api/readings ───────────────────────────────────────────────
-// Optionally accepts query-string filters: ?date=YYYY-MM-DD&slot=morning
+// Accepts query filters: ?page=1&limit=20&date=YYYY-MM-DD&slot=morning
 export const getReadings = async (filters = {}) => {
   const params = new URLSearchParams();
 
+  if (filters.page !== undefined) params.append("page", filters.page);
+  if (filters.limit !== undefined) params.append("limit", filters.limit);
   if (filters.date) params.append("date", filters.date);
   if (filters.slot && filters.slot !== "all") params.append("slot", filters.slot);
 
@@ -41,7 +43,7 @@ export const getReadings = async (filters = {}) => {
   const url = query ? `/api/readings?${query}` : "/api/readings";
 
   const response = await API.get(url);
-  return response.data.readings ?? response.data;
+  return response.data;
 };
 
 // ── POST  /api/readings ──────────────────────────────────────────────
