@@ -1,16 +1,13 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { AppRoutes } from '@/routes/AppRoutes';
 
-function App() {
-  
+export default function App() {
   return (
-    <div>
-      <h1 className='text-9xl text-red-500' >Hello</h1>
-    </div>
-  )
+    <ThemeProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 }
-
-export default App
