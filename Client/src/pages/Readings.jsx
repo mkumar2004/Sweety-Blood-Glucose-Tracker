@@ -21,7 +21,7 @@ export function Readings() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 pb-4">
+      <div className="space-y-6 pb-8">
         {/* Header */}
         <ReadingsHeader onAddReading={() => handleOpenAddDialog('morning')} />
 

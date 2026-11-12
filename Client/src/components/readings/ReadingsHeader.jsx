@@ -8,7 +8,7 @@ export function ReadingsHeader({ onAddReading, selectedDate = 'Thu, 12 Nov 2026'
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1 pb-1">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900 dark:text-white leading-tight">
           Readings
         </h1>
         <p className="text-xs text-neutral-400 mt-0.5">
@@ -21,15 +21,15 @@ export function ReadingsHeader({ onAddReading, selectedDate = 'Thu, 12 Nov 2026'
         <div className="relative">
           <button
             onClick={() => setShowDatePicker(!showDatePicker)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-neutral-800 bg-[#111111] text-xs font-medium text-neutral-300 hover:text-white hover:border-neutral-700 transition-colors cursor-pointer select-none"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-[#111111] text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-700 transition-colors cursor-pointer select-none"
           >
             <CalendarIcon className="w-3.5 h-3.5 text-neutral-400" />
             <span>{currentDate}</span>
           </button>
 
           {showDatePicker && (
-            <div className="absolute right-0 mt-2 p-3 rounded-xl bg-[#141414] border border-neutral-800 shadow-2xl z-50 animate-in fade-in zoom-in-95 w-60">
-              <p className="text-[11px] font-medium text-neutral-400 mb-2">Select Date</p>
+            <div className="absolute right-0 mt-2 p-3 rounded-xl bg-white dark:bg-[#141414] border border-neutral-200 dark:border-neutral-800 shadow-2xl z-50 animate-in fade-in zoom-in-95 w-60">
+              <p className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 mb-2">Select Date</p>
               <input
                 type="date"
                 defaultValue="2026-11-12"
@@ -47,7 +47,7 @@ export function ReadingsHeader({ onAddReading, selectedDate = 'Thu, 12 Nov 2026'
                   }
                   setShowDatePicker(false);
                 }}
-                className="w-full bg-[#1c1c1c] border border-neutral-700 rounded-lg p-2 text-xs text-white outline-none"
+                className="w-full bg-neutral-100 dark:bg-[#1c1c1c] border border-neutral-300 dark:border-neutral-700 rounded-lg p-2 text-xs text-neutral-900 dark:text-white outline-none"
               />
             </div>
           )}

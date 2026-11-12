@@ -62,16 +62,16 @@ export function RecentReadings({ onEditReading, onDeleteReading }) {
   });
 
   return (
-    <div className="rounded-3xl border border-neutral-800/80 bg-[#111111] p-4 sm:p-5 space-y-3">
+    <div className="rounded-3xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-[#111111] p-5 sm:p-6 space-y-4">
       {/* Header of Recent Readings */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-neutral-800/60 border border-neutral-700/60 flex items-center justify-center text-neutral-400">
-            <History className="w-3.5 h-3.5" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/60 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+            <History className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-xs font-semibold text-white leading-tight">Recent readings</h2>
-            <span className="text-[9px] font-mono uppercase text-neutral-500">
+            <h2 className="text-sm font-semibold text-neutral-900 dark:text-white">Recent readings</h2>
+            <span className="text-[10px] font-mono uppercase text-neutral-500">
               GET /readings
             </span>
           </div>

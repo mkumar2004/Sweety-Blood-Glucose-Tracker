@@ -34,7 +34,7 @@ export function ReadingStatus({ status, value, className = '' }) {
   // Default: In range
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border border-neutral-700/80 bg-neutral-900/90 text-neutral-300 ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border border-neutral-300 dark:border-neutral-700/80 bg-neutral-100 dark:bg-neutral-900/90 text-neutral-600 dark:text-neutral-300 ${className}`}
     >
       <Check className="w-3 h-3 text-neutral-400" />
       In range

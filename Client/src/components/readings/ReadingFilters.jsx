@@ -16,7 +16,7 @@ export function ReadingFilters({ activeSlot = 'all', onSelectSlot, onExport }) {
         <select
           value={activeSlot}
           onChange={(e) => onSelectSlot?.(e.target.value)}
-          className="appearance-none flex items-center gap-1.5 px-3 py-1.5 pl-8 pr-6 rounded-xl border border-neutral-800 bg-[#141414] text-xs font-medium text-neutral-300 hover:text-white hover:border-neutral-700 transition-colors cursor-pointer outline-none"
+          className="appearance-none flex items-center gap-1.5 px-3 py-1.5 pl-8 pr-6 rounded-xl border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-[#141414] text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-700 transition-colors cursor-pointer outline-none"
         >
           {slotOptions.map((opt) => (
             <option key={opt.id} value={opt.id} className="bg-[#141414] text-neutral-200">
@@ -30,7 +30,7 @@ export function ReadingFilters({ activeSlot = 'all', onSelectSlot, onExport }) {
       {/* Export Button */}
       <button
         onClick={onExport}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-800 bg-[#141414] text-xs font-medium text-neutral-300 hover:text-white hover:border-neutral-700 transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-[#141414] text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-700 transition-colors cursor-pointer"
       >
         <Download className="w-3.5 h-3.5 text-neutral-400" />
         <span>Export</span>

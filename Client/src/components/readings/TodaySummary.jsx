@@ -38,7 +38,7 @@ export function TodaySummary({ onAddReading }) {
     <div className="space-y-2.5">
       {/* Header of Today Section */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xs font-semibold text-white">Today</h2>
+        <h2 className="text-xs font-semibold text-neutral-900 dark:text-white">Today</h2>
         <ReadingProgress current={3} total={4} />
       </div>
 

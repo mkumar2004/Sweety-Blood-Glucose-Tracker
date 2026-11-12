@@ -26,27 +26,27 @@ export function UserProfile({ name = 'Manojkumar', initials = 'MK' }) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3 p-1 rounded-full hover:bg-neutral-800/40 transition-colors cursor-pointer select-none"
+        className="flex items-center gap-3 p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800/40 transition-colors cursor-pointer select-none"
       >
-        <span className="text-sm font-medium text-neutral-300 hidden sm:inline-block">
+        <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300 hidden sm:inline-block">
           {displayName}
         </span>
-        <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700/80 text-neutral-200 text-xs font-semibold flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700/80 text-neutral-700 dark:text-neutral-200 text-xs font-semibold flex items-center justify-center">
           {displayInitials}
         </div>
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#141414] border border-neutral-800 shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
-          <div className="px-3 py-2 border-b border-neutral-800/80">
-            <p className="text-xs font-medium text-white truncate">{displayName}</p>
-            <p className="text-[11px] text-neutral-400 truncate">{user?.email || 'user@example.com'}</p>
+        <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-[#141414] border border-neutral-200 dark:border-neutral-800 shadow-xl py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
+          <div className="px-3 py-2 border-b border-neutral-200 dark:border-neutral-800/80">
+            <p className="text-xs font-medium text-neutral-900 dark:text-white truncate">{displayName}</p>
+            <p className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">{user?.email || 'user@example.com'}</p>
           </div>
           <button
             onClick={() => {
               setOpen(false);
             }}
-            className="w-full text-left px-3 py-2 text-xs text-neutral-300 hover:bg-neutral-800/60 flex items-center gap-2 cursor-pointer transition-colors"
+            className="w-full text-left px-3 py-2 text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 flex items-center gap-2 cursor-pointer transition-colors"
           >
             <User className="w-3.5 h-3.5 text-neutral-400" />
             Profile
@@ -56,7 +56,7 @@ export function UserProfile({ name = 'Manojkumar', initials = 'MK' }) {
               setOpen(false);
               logout();
             }}
-            className="w-full text-left px-3 py-2 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-2 cursor-pointer transition-colors"
+            className="w-full text-left px-3 py-2 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2 cursor-pointer transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             Logout

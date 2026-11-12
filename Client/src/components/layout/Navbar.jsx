@@ -10,7 +10,7 @@ export function Navbar() {
   const isReportsActive = location.pathname === '/reports';
 
   return (
-    <header className="w-full border-b border-neutral-800/80 bg-[#090909]/95 backdrop-blur-md sticky top-0 z-40">
+    <header className="w-full border-b border-neutral-200 dark:border-neutral-800/80 bg-white/95 dark:bg-[#090909]/95 backdrop-blur-md sticky top-0 z-40">
       <div className="w-[95%] mx-auto h-14 flex items-center justify-between">
         {/* Left: Sweety Brand & Nav Links */}
         <div className="flex items-center gap-6">
@@ -23,8 +23,8 @@ export function Navbar() {
               to="/dashboard"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 isReadingsActive
-                  ? 'bg-neutral-800/90 text-white border border-neutral-700/60 shadow-sm'
-                  : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/50'
+                  ? 'bg-neutral-100 dark:bg-neutral-800/90 text-neutral-900 dark:text-white border border-neutral-300 dark:border-neutral-700/60 shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900/50'
               }`}
             >
               <Activity className="w-3.5 h-3.5 text-neutral-300" />
@@ -35,8 +35,8 @@ export function Navbar() {
               to="/reports"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 isReportsActive
-                  ? 'bg-neutral-800/90 text-white border border-neutral-700/60 shadow-sm'
-                  : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/50'
+                  ? 'bg-neutral-100 dark:bg-neutral-800/90 text-neutral-900 dark:text-white border border-neutral-300 dark:border-neutral-700/60 shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900/50'
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5 text-neutral-400" />
