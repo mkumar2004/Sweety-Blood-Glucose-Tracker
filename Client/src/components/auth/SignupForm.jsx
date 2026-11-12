@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { AuthFormCard } from './AuthFormCard';
+import { useAuth } from '@/hooks/useAuth';
+import { registerUser } from '@/services/authservices';
 
 export function SignupForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,7 +15,8 @@ export function SignupForm() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [demoFeedback, setDemoFeedback] = useState(null);
+  const [serverError, setServerError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
@@ -37,11 +41,33 @@ export function SignupForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setServerError(null);
+
     if (!validate()) return;
 
-    navigate('/dashboard');
+    try {
+      setLoading(true);
+      const data = await registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // If backend returns a token upon registration, log in directly; otherwise navigate to login
+      if (data.token) {
+        login(data);
+        navigate('/dashboard');
+      } else {
+        navigate('/login');
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+      setServerError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -49,6 +75,9 @@ export function SignupForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
+    }
+    if (serverError) {
+      setServerError(null);
     }
   };
 
@@ -64,9 +93,9 @@ export function SignupForm() {
         </p>
       </div>
 
-      {demoFeedback && (
-        <div className="mb-4 p-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-[#161616] text-xs text-neutral-800 dark:text-neutral-200">
-          ℹ️ {demoFeedback}
+      {serverError && (
+        <div className="mb-4 p-3 rounded-xl border border-red-500/30 bg-red-500/10 text-xs text-red-600 dark:text-red-400">
+          {serverError}
         </div>
       )}
 
@@ -87,6 +116,7 @@ export function SignupForm() {
             onChange={handleChange}
             placeholder="Your name"
             autoComplete="name"
+            disabled={loading}
             className={`w-full h-11 px-3.5 rounded-xl text-sm transition-colors outline-none
               bg-white dark:bg-[#121212] text-neutral-900 dark:text-[#F5F5F5]
               border ${
@@ -95,6 +125,7 @@ export function SignupForm() {
                   : 'border-neutral-200 dark:border-[#262626] focus:border-neutral-400 dark:focus:border-neutral-600'
               }
               placeholder:text-neutral-400 dark:placeholder:text-neutral-600
+              disabled:opacity-60
             `}
           />
           {errors.name && (
@@ -120,6 +151,7 @@ export function SignupForm() {
             onChange={handleChange}
             placeholder="you@example.com"
             autoComplete="email"
+            disabled={loading}
             className={`w-full h-11 px-3.5 rounded-xl text-sm transition-colors outline-none
               bg-white dark:bg-[#121212] text-neutral-900 dark:text-[#F5F5F5]
               border ${
@@ -128,6 +160,7 @@ export function SignupForm() {
                   : 'border-neutral-200 dark:border-[#262626] focus:border-neutral-400 dark:focus:border-neutral-600'
               }
               placeholder:text-neutral-400 dark:placeholder:text-neutral-600
+              disabled:opacity-60
             `}
           />
           {errors.email && (
@@ -154,6 +187,7 @@ export function SignupForm() {
               onChange={handleChange}
               placeholder="••••••••"
               autoComplete="new-password"
+              disabled={loading}
               className={`w-full h-11 px-3.5 pr-10 rounded-xl text-sm transition-colors outline-none
                 bg-white dark:bg-[#121212] text-neutral-900 dark:text-[#F5F5F5]
                 border ${
@@ -162,6 +196,7 @@ export function SignupForm() {
                     : 'border-neutral-200 dark:border-[#262626] focus:border-neutral-400 dark:focus:border-neutral-600'
                 }
                 placeholder:text-neutral-400 dark:placeholder:text-neutral-600
+                disabled:opacity-60
               `}
             />
             <button
@@ -189,13 +224,16 @@ export function SignupForm() {
         {/* Submit Button */}
         <button
           type="submit"
+          disabled={loading}
           className="w-full h-11 mt-2 rounded-xl font-medium text-sm transition-all duration-150 cursor-pointer shadow-sm
             bg-[#171717] hover:bg-[#262626] text-white
             dark:bg-[#FFFFFF] dark:hover:bg-[#E5E5E5] dark:text-[#090909]
-            active:scale-[0.99]
+            active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed
+            flex items-center justify-center gap-2
           "
         >
-          Create account
+          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          <span>{loading ? 'Creating account...' : 'Create account'}</span>
         </button>
       </form>
 
