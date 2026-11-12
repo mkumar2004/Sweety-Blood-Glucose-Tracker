@@ -3,6 +3,7 @@ import { ReportProvider } from '@/context/ReportContext';
 import { ReportsHeader } from '@/components/reports/ReportsHeader';
 import { ReportTabs } from '@/components/reports/ReportTabs';
 import { ReportSummary } from '@/components/reports/ReportSummary';
+import { ReportChart } from '@/components/reports/ReportChart';
 import { DailyReportTable } from '@/components/reports/DailyReportTable';
 
 export function Reports() {
@@ -18,6 +19,9 @@ export function Reports() {
 
           {/* 4 Summary Stat Cards */}
           <ReportSummary />
+
+          {/* Trend Line Chart over the Period */}
+          <ReportChart />
 
           {/* Table of Readings / Slots */}
           <DailyReportTable />

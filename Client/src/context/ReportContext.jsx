@@ -160,6 +160,7 @@ export function ReportProvider({ children }) {
       totalSlots: reportType === 'daily' ? 4 : (apiData.totalSlots || readingsCount),
       hasReadings: readingsCount > 0,
       slots,
+      rawReadings: dbReadings,
     };
   }, [selectedDate, reportType, apiData]);
 

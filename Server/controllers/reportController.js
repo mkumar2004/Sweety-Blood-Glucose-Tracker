@@ -46,34 +46,29 @@ const generateReport = async (
 
     const stats = statsResult.rows[0];
 
-    let readings = [];
-
-    if (includeReadings) {
-        const readingsResult = await pool.query(
-            `SELECT id, reading_date, time_slot, value
-             FROM glucose_readings
-             WHERE user_id = $1
-             AND reading_date >= $2::date
-             AND reading_date < $3::date
-             ORDER BY
-                CASE time_slot
-                    WHEN 'morning' THEN 1
-                    WHEN 'after_breakfast' THEN 2
-                    WHEN 'after_lunch' THEN 3
-                    WHEN 'after_dinner' THEN 4
-                END`,
-            [userId, startDate, endDate]
-        );
-
-        readings = readingsResult.rows;
-    }
+    // Query readings list (ordered chronologically by date and slot)
+    const readingsResult = await pool.query(
+        `SELECT id, reading_date, time_slot, value, created_at
+         FROM glucose_readings
+         WHERE user_id = $1
+         AND reading_date >= $2::date
+         AND reading_date < $3::date
+         ORDER BY reading_date ASC,
+            CASE time_slot
+                WHEN 'morning' THEN 1
+                WHEN 'after_breakfast' THEN 2
+                WHEN 'after_lunch' THEN 3
+                WHEN 'after_dinner' THEN 4
+            END`,
+        [userId, startDate, endDate]
+    );
 
     return {
         highest: stats.highest,
         lowest: stats.lowest,
         average: stats.average,
         totalReadings: Number(stats.total_readings),
-        readings
+        readings: readingsResult.rows
     };
 };
 
