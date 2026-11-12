@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
 import Dashboard from '@/pages/Dashboard';
+import Reports from '@/pages/Reports';
 import { ProtectedRoute, PublicRoute } from '@/routes/ProtectedRoute';
 
 export function AppRoutes() {
@@ -17,6 +18,7 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/readings" element={<Dashboard />} />
+        <Route path="/reports" element={<Reports />} />
       </Route>
 
       {/* Fallback */}
