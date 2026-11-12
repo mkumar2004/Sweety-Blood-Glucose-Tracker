@@ -1,9 +1,5 @@
-import React from 'react'
+import Readings from './Readings';
 
-function Dashboard() {
-  return (
-    <div>Dashboard</div>
-  )
+export default function Dashboard() {
+  return <Readings />;
 }
-
-export default Dashboard

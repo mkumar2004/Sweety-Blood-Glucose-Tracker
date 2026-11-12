@@ -16,6 +16,7 @@ export function AppRoutes() {
       {/* Protected Routes (Only accessible when logged in; redirects to /login if NOT logged in) */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/readings" element={<Dashboard />} />
       </Route>
 
       {/* Fallback */}
