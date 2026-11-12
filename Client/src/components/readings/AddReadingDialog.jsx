@@ -1,24 +1,46 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 
-export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onSave }) {
-  const [date, setDate] = useState('2026-11-12');
+export function AddReadingDialog({
+  isOpen,
+  onClose,
+  defaultSlot = 'morning',
+  onSave,
+  editingReading = null,
+}) {
+  const today = new Date().toISOString().split('T')[0];
+
+  const [date, setDate] = useState(today);
   const [timeSlot, setTimeSlot] = useState(defaultSlot);
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
+  const isEditing = !!editingReading;
+
+  // Sync form when dialog opens or editingReading changes
   useEffect(() => {
-    if (defaultSlot) {
+    if (editingReading) {
+      // Populate form from existing reading
+      const rDate = (editingReading.reading_date || editingReading.date || '').slice(0, 10);
+      setDate(rDate || today);
+      setTimeSlot(editingReading.time_slot || editingReading.timeSlot || defaultSlot);
+      setValue(String(editingReading.value || ''));
+    } else {
+      setDate(today);
       setTimeSlot(defaultSlot);
+      setValue('');
     }
-  }, [defaultSlot]);
+    setError('');
+  }, [editingReading, defaultSlot, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // ── Client-side validation ──
     const valNum = Number(value);
     if (!value || isNaN(valNum) || !Number.isInteger(valNum)) {
       setError('Glucose value must be an integer.');
@@ -30,19 +52,32 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
       return;
     }
 
-    const todayStr = new Date().toISOString().split('T')[0];
-    if (date > todayStr && date > '2026-11-12') {
+    if (date > today) {
       setError('Date cannot be in the future.');
       return;
     }
 
-    onSave?.({
-      date,
-      timeSlot,
-      value: valNum,
-    });
+    // ── Call API via parent handler ──
+    setSaving(true);
+    try {
+      const result = await onSave?.({
+        date,
+        timeSlot,
+        value: valNum,
+      });
 
-    onClose();
+      if (result && !result.success) {
+        setError(result.message || 'Failed to save reading.');
+        setSaving(false);
+        return;
+      }
+
+      setSaving(false);
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Something went wrong.');
+      setSaving(false);
+    }
   };
 
   return (
@@ -51,14 +86,17 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 p-1 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+          disabled={saving}
+          className="absolute right-4 top-4 p-1 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-50"
         >
           <X className="w-4 h-4" />
         </button>
 
-        <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-1">Add glucose reading</h3>
+        <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-1">
+          {isEditing ? 'Edit glucose reading' : 'Add glucose reading'}
+        </h3>
         <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-5">
-          Record your blood sugar measurement.
+          {isEditing ? 'Update your blood sugar measurement.' : 'Record your blood sugar measurement.'}
         </p>
 
         {error && (
@@ -74,9 +112,10 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
             <input
               type="date"
               value={date}
-              max="2026-11-12"
+              max={today}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-[#1a1a1a] text-xs text-neutral-900 dark:text-white outline-none focus:border-neutral-500"
+              disabled={saving}
+              className="w-full h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-[#1a1a1a] text-xs text-neutral-900 dark:text-white outline-none focus:border-neutral-500 disabled:opacity-50"
             />
           </div>
 
@@ -86,7 +125,8 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
             <select
               value={timeSlot}
               onChange={(e) => setTimeSlot(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-[#1a1a1a] text-xs text-neutral-900 dark:text-white outline-none focus:border-neutral-500"
+              disabled={saving}
+              className="w-full h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-[#1a1a1a] text-xs text-neutral-900 dark:text-white outline-none focus:border-neutral-500 disabled:opacity-50"
             >
               <option value="morning">Morning (fasting)</option>
               <option value="after_breakfast">After breakfast</option>
@@ -105,7 +145,8 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
               placeholder="e.g. 120"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-[#1a1a1a] text-xs text-neutral-900 dark:text-white outline-none focus:border-neutral-500"
+              disabled={saving}
+              className="w-full h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-[#1a1a1a] text-xs text-neutral-900 dark:text-white outline-none focus:border-neutral-500 disabled:opacity-50"
             />
             <p className="text-[11px] text-neutral-500">Between 40 and 600 mg/dl.</p>
           </div>
@@ -115,15 +156,18 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-neutral-300 dark:border-neutral-800 bg-neutral-100 dark:bg-[#1c1c1c] text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+              disabled={saving}
+              className="px-4 py-2 rounded-xl border border-neutral-300 dark:border-neutral-800 bg-neutral-100 dark:bg-[#1c1c1c] text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 text-xs font-medium hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-colors cursor-pointer"
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 text-xs font-medium hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
             >
-              Save reading
+              {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {isEditing ? 'Update reading' : 'Save reading'}
             </button>
           </div>
         </form>
@@ -131,4 +175,3 @@ export function AddReadingDialog({ isOpen, onClose, defaultSlot = 'morning', onS
     </div>
   );
 }
-

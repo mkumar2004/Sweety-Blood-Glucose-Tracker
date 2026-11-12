@@ -4,19 +4,40 @@ import { ReadingsHeader } from '@/components/readings/ReadingsHeader';
 import { TodaySummary } from '@/components/readings/TodaySummary';
 import { RecentReadings } from '@/components/readings/RecentReadings';
 import { AddReadingDialog } from '@/components/readings/AddReadingDialog';
+import { useReadings } from '@/hooks/useReadings';
 
 export function Readings() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeSlot, setActiveSlot] = useState('morning');
+  const [editingReading, setEditingReading] = useState(null);
+
+  const { addReading, editReading, removeReading, loading } = useReadings();
 
   const handleOpenAddDialog = (slot = 'morning') => {
+    setEditingReading(null);
     setActiveSlot(slot);
     setIsDialogOpen(true);
   };
 
-  const handleSaveReading = (newReading) => {
-    // UI-only demo interaction
-    console.log('New reading saved (UI demo):', newReading);
+  const handleEditReading = (reading) => {
+    setEditingReading(reading);
+    setActiveSlot(reading.time_slot || reading.timeSlot || 'morning');
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteReading = async (reading) => {
+    if (!window.confirm('Are you sure you want to delete this reading?')) return;
+    await removeReading(reading.id);
+  };
+
+  const handleSaveReading = async (readingData) => {
+    if (editingReading) {
+      const result = await editReading(editingReading.id, readingData);
+      return result;
+    } else {
+      const result = await addReading(readingData);
+      return result;
+    }
   };
 
   return (
@@ -29,14 +50,21 @@ export function Readings() {
         <TodaySummary onAddReading={handleOpenAddDialog} />
 
         {/* Recent Readings Table & Filters */}
-        <RecentReadings />
+        <RecentReadings
+          onEditReading={handleEditReading}
+          onDeleteReading={handleDeleteReading}
+        />
 
-        {/* Add Reading Dialog */}
+        {/* Add / Edit Reading Dialog */}
         <AddReadingDialog
           isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={() => {
+            setIsDialogOpen(false);
+            setEditingReading(null);
+          }}
           defaultSlot={activeSlot}
           onSave={handleSaveReading}
+          editingReading={editingReading}
         />
       </div>
     </DashboardLayout>
